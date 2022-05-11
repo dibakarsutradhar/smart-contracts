@@ -1,15 +1,30 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.6.6 <0.9.0;
+pragma solidity >=0.6.0;
 
 import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.6/vendor/SafeMathChainlink.sol";
 
 contract FundMe {
+    using SafeMathChainlink for uint256;
+
     mapping(address => uint256) public addressToAmountFunded;
 
+    address[] public funders;
+    address owner;
+
+    constructor() public {
+        owner = msg.sender;
+    }
+
     function fund() public payable {
+        uint256 minimumUSD = 50 * 10**18;
+        require(
+            getConverstionRate(msg.value) >= minimumUSD,
+            "You need to spend more ETH!"
+        );
         addressToAmountFunded[msg.sender] += msg.value;
-        // what the ETH -> USD converstion rate
+        funders.push(msg.sender);
     }
 
     function getVersion() public view returns (uint256) {
@@ -36,5 +51,19 @@ contract FundMe {
         uint256 ethPrice = getPrice();
         uint256 ethAmountInUsd = (ethPrice * ethAmount) / 1000000000000000000;
         return ethAmountInUsd;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    function withdraw() public payable onlyOwnØer {
+        msg.sender.transfer(address(this).balance);
+        for (uint256 i = 0; i < funders.length; i++) {
+            address funder = funders[i];
+            addressToAmountFunded[funder] = 0;
+        }
+        funders = new address[](0);
     }
 }

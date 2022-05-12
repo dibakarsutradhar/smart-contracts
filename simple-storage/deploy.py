@@ -36,11 +36,19 @@ bytecode = compliled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["evm
 # get abi
 abi = compliled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["abi"]
 
-# connection to ganache
-w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:7545"))
-chain_id = 1337
-my_address = "0x5ccEd8676ba5b6C2CCAe4Bf6a2c2ED6314D3Ce22"
-private_key = os.getenv("PRIVATE_KEY")
+# connection to ganache (local net)
+# w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
+# chain_id = 1337
+# my_address = "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1"
+# private_key = os.getenv("PRIVATE_KEY")
+
+# connection to rinkeby mainnet
+w3 = Web3(
+    Web3.HTTPProvider("https://rinkeby.infura.io/v3/29ee0a1e79504d95adb395397857993e")
+)
+chain_id = 4
+my_address = "0xb15310296b81fF9336E46a21451CB721B61515Ec"
+private_key = os.getenv("RINKEBY_PRIVATE_KEY")
 
 # Create the contract in python
 SimpleStorage = w3.eth.contract(abi=abi, bytecode=bytecode)

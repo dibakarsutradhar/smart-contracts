@@ -28,6 +28,7 @@ async function main() {
   const contract = await contractFactory.deploy();
   console.log('Contract Deployed!');
   await contract.deployTransaction.wait(1);
+  console.log(`Contract Address: ${contract.address}`);
 
   // const nonce = await wallet.getTransactionCount();
   // const tx = {

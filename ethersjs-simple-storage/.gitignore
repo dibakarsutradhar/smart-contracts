@@ -1,3 +1,5 @@
 node_modules
 .env
 .encryptedKey.json
+.package-lock.json
+.yarn-error.log

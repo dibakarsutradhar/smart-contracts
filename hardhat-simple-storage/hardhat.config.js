@@ -2,6 +2,8 @@ require('@nomiclabs/hardhat-waffle');
 require('@nomiclabs/hardhat-etherscan');
 require('dotenv').config();
 require('./tasks/block-number');
+require('hardhat-gas-reporter');
+require('solidity-coverage');
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -10,9 +12,10 @@ require('./tasks/block-number');
  * @type import('hardhat/config').HardhatUserConfig
  */
 
-const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL;
-const RINKEBY_PRIVATE_KEY = process.env.RINKEBY_PRIVATE_KEY;
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
+const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL || 'https://eth-rinkeby';
+const RINKEBY_PRIVATE_KEY = process.env.RINKEBY_PRIVATE_KEY || '0xkey';
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || 'key';
+const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || 'key';
 
 module.exports = {
   defaultNetwork: 'hardhat',
@@ -30,5 +33,13 @@ module.exports = {
   solidity: '0.8.7',
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
+  },
+  gasReporter: {
+    enabled: false,
+    outputFile: 'gas-report.txt',
+    noColors: true,
+    currency: 'USD',
+    coinmarketcap: COINMARKETCAP_API_KEY,
+    token: 'MATIC',
   },
 };

@@ -17,6 +17,7 @@
   },
   "scripts": {
     "deploy": "yarn hardhat run scripts/deploy.js",
-    "deploy-rinkeby": "yarn hardhat run scripts/deploy.js --network rinkeby"
+    "deploy-rinkeby": "yarn hardhat run scripts/deploy.js --network rinkeby",
+    "deploy-localhost": "yarn hardhat run scripts/deploy.js --network localhost"
   }
 }

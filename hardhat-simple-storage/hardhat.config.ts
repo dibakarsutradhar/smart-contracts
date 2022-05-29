@@ -1,9 +1,11 @@
-require('@nomiclabs/hardhat-waffle');
-require('@nomiclabs/hardhat-etherscan');
-require('dotenv').config();
-require('./tasks/block-number');
-require('hardhat-gas-reporter');
-require('solidity-coverage');
+import '@nomiclabs/hardhat-ethers';
+import '@nomiclabs/hardhat-etherscan';
+import '@nomiclabs/hardhat-waffle';
+import 'dotenv/config';
+import 'hardhat-gas-reporter';
+import 'solidity-coverage';
+import './tasks/block-number';
+import '@typechain/hardhat';
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more

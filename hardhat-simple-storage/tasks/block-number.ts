@@ -1,4 +1,4 @@
-const { task } = require('hardhat/config');
+import { task } from 'hardhat/config';
 
 task('block-number', 'Prints the current block number').setAction(
   async (taskArgs, hre) => {
@@ -7,4 +7,4 @@ task('block-number', 'Prints the current block number').setAction(
   }
 );
 
-module.exports = {};
+export default task;

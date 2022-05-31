@@ -1,5 +1,6 @@
 node_modules
 .env
+.env.example
 coverage
 coverage.json
 typechain
@@ -9,3 +10,4 @@ cache
 artifacts
 .node_modules
 yarn.lock
+deployments

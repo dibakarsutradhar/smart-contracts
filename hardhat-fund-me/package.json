@@ -1,4 +1,7 @@
 {
+  "name": "hardhat-fund-me",
+  "author": "Dibakar Sutra Dhar",
+  "version": "0.0.1",
   "devDependencies": {
     "@chainlink/contracts": "^0.4.1",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
@@ -7,12 +10,6 @@
     "chai": "^4.2.0",
     "dotenv": "^16.0.0",
     "eslint": "^7.29.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-promise": "^5.1.0",
     "ethereum-waffle": "^3.0.0",
     "ethers": "^5.6.8",
     "hardhat": "^2.9.7",
@@ -22,5 +19,13 @@
     "prettier-plugin-solidity": "^1.0.0-beta.13",
     "solhint": "^3.3.6",
     "solidity-coverage": "^0.7.16"
+  },
+  "scripts": {
+    "test": "yarn hardhat test",
+    "test:stagging": "yarn hardhat test --network rinkeby",
+    "lint": "yarn solhint 'contracts/*.sol'",
+    "lint:fix": "yarn solhint 'contracts/*.sol' --fix",
+    "fund": "yarn hardhat run scripts/fund.js --network localhost",
+    "coverage": "yarn hardhat coverage"
   }
 }

@@ -23,6 +23,10 @@ module.exports = {
   },
   defaultNetwork: 'hardhat',
   networks: {
+    hardhat: {
+      chainId: 31337,
+      // gasPrice: 130000000000,
+    },
     rinkeby: {
       url: RINKEBY_RPC_URL,
       accounts: [RINKEBY_PRIVATE_KEY],
@@ -37,7 +41,7 @@ module.exports = {
     },
   },
   gasReporter: {
-    enabled: true,
+    enabled: false,
     outputFile: 'gas-report.txt',
     noColors: true,
     currency: 'USD',

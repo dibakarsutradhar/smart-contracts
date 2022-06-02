@@ -24,10 +24,10 @@ contract FundMe {
   using PriceConverter for uint256;
 
   // State Variables
-  mapping(address => uint256) private s_addressToAmountFunded;
-  address[] private s_funders;
-  address private immutable i_owner;
   uint256 public constant MINIMUM_USD = 50 * 10**18;
+  address private immutable i_owner;
+  address[] private s_funders;
+  mapping(address => uint256) private s_addressToAmountFunded;
   AggregatorV3Interface private s_priceFeed;
 
   // Modifiers
@@ -47,11 +47,12 @@ contract FundMe {
   /// private
   /// view / pure
 
-  constructor(address priceFeedAddress) {
+  constructor(address priceFeed) {
+    s_priceFeed = AggregatorV3Interface(priceFeed);
     i_owner = msg.sender;
-    s_priceFeed = AggregatorV3Interface(priceFeedAddress);
   }
 
+  /// @notice Funds our contract based on the ETH/USD price
   function fund() public payable {
     require(
       msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,
@@ -78,10 +79,8 @@ contract FundMe {
     // bool sendSuccess = payable(msg.sender).send(address(this).balance);
     // revert(sendSuccess, "Send failed");
     // call
-    (bool callSuccess, ) = payable(msg.sender).call{
-      value: address(this).balance
-    }('');
-    require(callSuccess, 'Call failed');
+    (bool success, ) = i_owner.call{value: address(this).balance}('');
+    require(success);
   }
 
   function cheaperWithdraw() public payable onlyOwner {
@@ -105,12 +104,16 @@ contract FundMe {
     return s_funders[index];
   }
 
-  function getAddressToAmountFunded(address funder)
+  /** @notice Gets the amount that an address has funded
+   * @param  fundingAddress the address of the funder
+   * @return the amount funded
+   */
+  function getAddressToAmountFunded(address fundingAddress)
     public
     view
     returns (uint256)
   {
-    return s_addressToAmountFunded[funder];
+    return s_addressToAmountFunded[fundingAddress];
   }
 
   function getPriceFeed() public view returns (AggregatorV3Interface) {

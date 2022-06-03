@@ -1,14 +1,12 @@
-const { getNamedAccounts, ethers } = require('hardhat');
+import { getNamedAccounts, ethers } from 'hardhat';
 
 const main = async () => {
   const { deployer } = await getNamedAccounts();
   const fundMe = await ethers.getContract('FundMe', deployer);
-  console.log('Funding Contract....');
-  const transactionResponse = await fundMe.fund({
-    value: ethers.utils.parseEther('1'),
-  });
+  console.log('Funding...');
+  const transactionResponse = await fundMe.withdraw();
   await transactionResponse.wait();
-  console.log('Funded');
+  console.log('Got it back');
 };
 
 main()

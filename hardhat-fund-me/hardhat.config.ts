@@ -1,10 +1,10 @@
-require('dotenv').config();
-
-require('@nomiclabs/hardhat-etherscan');
-require('@nomiclabs/hardhat-waffle');
-require('hardhat-gas-reporter');
-require('solidity-coverage');
-require('hardhat-deploy');
+import 'dotenv/config';
+import '@nomiclabs/hardhat-etherscan';
+import '@nomiclabs/hardhat-waffle';
+import 'hardhat-gas-reporter';
+import 'solidity-coverage';
+import 'hardhat-deploy';
+import '@typechain/hardhat';
 
 /**
  * @type import('hardhat/config').HardhatUserConfig

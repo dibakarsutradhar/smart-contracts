@@ -1,23 +1,26 @@
-const { getNamedAccounts, deployments, network } = require('hardhat');
-const {
-  networkConfig,
-  developmentChains,
-} = require('../helper-hardhat-config');
-const { verify } = require('../utils/verify');
+import { DeployFunction } from 'hardhat-deploy/types';
+import { networkConfig, developmentChains } from '../helper-hardhat-config';
+import verify from '../utils/verify';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
 
-module.exports = async ({ getNamedAccounts, deployments }) => {
+type chainId = number;
+type ethUsdPriceFeedAddress = string;
+
+const deployFundMe: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+  // @ts-ignore
+  const { getNamedAccounts, deployments, network } = hre;
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
-  const chainId = network.config.chainId;
+  const chainId: chainId = network.config.chainId!;
 
   // If chainId is X use address Y
-  let ethUsdPriceFeedAddress;
+  let ethUsdPriceFeedAddress: ethUsdPriceFeedAddress;
 
   if (chainId == 31337) {
     const ethUsdAggregator = await deployments.get('MockV3Aggregator');
     ethUsdPriceFeedAddress = ethUsdAggregator.address;
   } else {
-    ethUsdPriceFeedAddress = networkConfig[chainId]['ethUsdPriceFeed'];
+    ethUsdPriceFeedAddress = networkConfig[network.name].ethUsdPriceFeed!;
   }
 
   // If the contract doesn't exist, deploy a minimal version of
@@ -31,7 +34,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     args: [ethUsdPriceFeedAddress],
     log: true,
     // we need to wait if on a live network so we can verify properly
-    waitConfirmations: network.config.blockConfirmations || 1,
+    waitConfirmations: networkConfig[network.name].blockConfirmations || 0,
   });
 
   log(`FundMe deployed at ${fundMe.address}`);
@@ -47,4 +50,5 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   log('----------------------------------------');
 };
 
-module.exports.tags = ['all', 'fundme '];
+export default deployFundMe;
+deployFundMe.tags = ['all', 'fundme '];

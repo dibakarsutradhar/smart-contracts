@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Fund Me App</title>
+	</head>
+	<body>
+		Hello Refresh test
+		<script>
+			const connect = async () => {
+				if (typeof window.ethereum !== 'undefined') {
+					await window.ethereum.request({ method: 'eth_requestAccounts' });
+					document.getElementById('connectButton').innerHTML =
+						'Wallet Connected';
+				} else {
+					document.getElementById('connectButton').innerHTML =
+						'Please install Metamask wallet to continue';
+				}
+			};
+		</script>
+		<button id="connectButton" onclick="connect()">Connect</button>
+	</body>
+</html>

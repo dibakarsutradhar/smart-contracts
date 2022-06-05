@@ -8,18 +8,13 @@
 	</head>
 	<body>
 		Hello Refresh test
-		<script>
-			const connect = async () => {
-				if (typeof window.ethereum !== 'undefined') {
-					await window.ethereum.request({ method: 'eth_requestAccounts' });
-					document.getElementById('connectButton').innerHTML =
-						'Wallet Connected';
-				} else {
-					document.getElementById('connectButton').innerHTML =
-						'Please install Metamask wallet to continue';
-				}
-			};
-		</script>
-		<button id="connectButton" onclick="connect()">Connect</button>
+		<button id="connectButton">Connect</button>
+		<button id="balanceButton">getBalance</button>
+		<button id="withdrawButton">Withdraw</button>
+		<!-- form -->
+		<label for="fund">ETH Amount</label>
+		<input id="ethAmount" placeholder="0.1" />
+		<button id="fundButton">Fund</button>
 	</body>
+	<script src="./index.js" type="module"></script>
 </html>

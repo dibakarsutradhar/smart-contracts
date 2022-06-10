@@ -7,7 +7,7 @@ const {
 
 !developmentChains.includes(network.name)
   ? describe.skip
-  : describe('Raffle', () => {
+  : describe('Raffle Unit Test', () => {
       let raffle, vrfCoordinatorV2Mock, raffleEntranceFee, deployer, interval;
       const chainId = network.config.chainId;
 

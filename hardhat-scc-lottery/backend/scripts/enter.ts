@@ -1,4 +1,4 @@
-const { ethers } = require('hardhat');
+import { ethers } from 'hardhat';
 
 const enterRaffle = async () => {
   const raffle = await ethers.getContract('Raffle');

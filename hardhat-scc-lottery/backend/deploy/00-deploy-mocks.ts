@@ -9,7 +9,6 @@ const deployMocks: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = network.config.chainId;
-  const args = [BASE_FEE, GAS_PRICE_LINK];
 
   // if (developmentChains.includes(network.name)) {
   if (chainId == 31337) {
@@ -19,7 +18,7 @@ const deployMocks: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     await deploy('VRFCoordinatorV2Mock', {
       from: deployer,
       log: true,
-      args: args,
+      args: [BASE_FEE, GAS_PRICE_LINK],
     });
     log('Mocks Deployed..!');
     log('-----------------------------------------');

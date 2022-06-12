@@ -1,5 +1,7 @@
+import '@typechain/hardhat';
 import '@nomiclabs/hardhat-waffle';
 import '@nomiclabs/hardhat-etherscan';
+import '@nomiclabs/hardhat-ethers';
 import 'hardhat-deploy';
 import 'solidity-coverage';
 import 'hardhat-gas-reporter';
@@ -21,17 +23,24 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       chainId: 31337,
-      // blockConfirmations: 1,
       // gasPrice: 130000000000,
     },
     rinkeby: {
       url: RINKEBY_RPC_URL,
       accounts: [RINKEBY_PRIVATE_KEY],
       chainId: 4,
-      // blockConfirmations: 6,
     },
   },
-  solidity: '0.8.7',
+  solidity: {
+    compilers: [
+      {
+        version: '0.8.7',
+      },
+      {
+        version: '0.8.8',
+      },
+    ],
+  },
   gasReporter: {
     enabled: false,
     outputFile: 'gas-report.txt',
@@ -46,6 +55,7 @@ const config: HardhatUserConfig = {
   namedAccounts: {
     deployer: {
       default: 0,
+      1: 0,
     },
     player: {
       default: 1,
@@ -55,3 +65,5 @@ const config: HardhatUserConfig = {
     timeout: 200000, // 400 seconds
   },
 };
+
+export default config;

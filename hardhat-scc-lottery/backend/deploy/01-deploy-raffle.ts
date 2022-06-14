@@ -10,6 +10,7 @@ import verify from '../utils/verify';
 type chainId = number;
 
 const VRF_SUB_FUND_AMOUNT = '1000000000000000000000';
+// const VRF_SUB_FUND_AMOUNT = '100000';
 
 const deployRaffle: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, getNamedAccounts, network, ethers } = hre;

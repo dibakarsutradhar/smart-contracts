@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
-import ManualHeader from '../components/ManualHeader';
+// import ManualHeader from '../components/ManualHeader';
+import Header from '../components/Header';
 
 export default function Home() {
   return (
@@ -10,8 +11,8 @@ export default function Home() {
         <meta name="description" content="Smart Contract Lottery" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      Hello
-      <ManualHeader />
+      {/* <ManualHeader /> */}
+      <Header />
       {/* Header / connect button / nav bar */}
     </div>
   );

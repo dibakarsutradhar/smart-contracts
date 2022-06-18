@@ -1,10 +1,11 @@
-const { ethers } = require('hardhat');
+const { ethers, network } = require('hardhat');
+const { networkConfig } = require('../helper-hardhat-config');
 
 const getLendingPool = async (account) => {
   // Lending Pool Address Provider: 0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5
   const lendingPoolAddressProvider = await ethers.getContractAt(
     'ILendingPoolAddressesProvider',
-    '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
+    networkConfig[network.config.chainId].lendingPoolAddressesProvider,
     account
   );
 

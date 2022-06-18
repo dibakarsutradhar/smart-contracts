@@ -1,4 +1,4 @@
-require('@typechain/hardhat');
+// require('@typechain/hardhat');
 require('@nomiclabs/hardhat-waffle');
 require('@nomiclabs/hardhat-etherscan');
 require('@nomiclabs/hardhat-ethers');
@@ -16,7 +16,7 @@ const RINKEBY_PRIVATE_KEY = process.env.RINKEBY_PRIVATE_KEY || '0xkey';
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || 'key';
 const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || 'key';
 
-const config = {
+module.exports = {
   defaultNetwork: 'hardhat',
   networks: {
     hardhat: {
@@ -31,12 +31,10 @@ const config = {
   },
   solidity: {
     compilers: [
-      {
-        version: '0.8.7',
-      },
-      {
-        version: '0.8.8',
-      },
+      { version: '0.8.7' },
+      { version: '0.8.8' },
+      { version: '0.4.19' },
+      { version: '0.6.12' },
     ],
   },
   gasReporter: {
@@ -64,4 +62,4 @@ const config = {
   },
 };
 
-export default config;
+// export default config;

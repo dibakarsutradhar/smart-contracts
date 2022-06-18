@@ -18,4 +18,4 @@ const getWeth = async (account) => {
   console.log(`Got ${wethBalance.toString()} WETH`);
 };
 
-module.exports = { getWeth };
+module.exports = { getWeth, AMOUNT };

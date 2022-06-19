@@ -12,6 +12,9 @@ const approveERC20 = async (
     account
   );
 
+  console.log(
+    `Approving ERC20 Token Address from ${spenderAddress} for ${amountToSpend} worth of ETH`
+  );
   const tx = await erc20Token.approve(spenderAddress, amountToSpend);
   await tx.wait(1);
   console.log('Approved!');

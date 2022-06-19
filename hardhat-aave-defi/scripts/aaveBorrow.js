@@ -6,6 +6,7 @@ const { AMOUNT, networkConfig } = require('../helper-hardhat-config');
 const { getBorrowUserData } = require('./getBorrowUserData');
 const { getDAIPrice } = require('./getDAIPrice');
 const { borrowDAI } = require('./borrowDAI');
+const { repay } = require('./repay');
 
 const main = async () => {
   // the protocol treats everything as an ERC20 token
@@ -28,10 +29,7 @@ const main = async () => {
   console.log('Deposited...!');
 
   // User data
-  let { availableBorrowsETH, totalDebtETH } = await getBorrowUserData(
-    lendingPool,
-    deployer
-  );
+  let { availableBorrowsETH } = await getBorrowUserData(lendingPool, deployer);
 
   const daiPrice = await getDAIPrice();
   const amountDAItoBorrow =
@@ -47,6 +45,12 @@ const main = async () => {
   const daiTokenAddress = networkConfig[network.config.chainId].daiToken;
   await borrowDAI(daiTokenAddress, lendingPool, amountDAItoBorrowWei, deployer);
   await getBorrowUserData(lendingPool, deployer);
+
+  // Repay
+  await repay(amountDAItoBorrowWei, daiTokenAddress, lendingPool, deployer);
+  await getBorrowUserData(lendingPool, deployer);
+
+  // Repay Interest
 };
 
 main()

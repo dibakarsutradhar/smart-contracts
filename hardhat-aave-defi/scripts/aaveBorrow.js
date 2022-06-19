@@ -3,6 +3,7 @@ const { getNamedAccounts, network } = require('hardhat');
 const { getLendingPool } = require('./getLendingPool');
 const { approveERC20 } = require('./approveERC20');
 const { AMOUNT, networkConfig } = require('../helper-hardhat-config');
+const { getBorrowUserData } = require('./getBorrowUserData');
 
 const main = async () => {
   // the protocol treats everything as an ERC20 token
@@ -23,6 +24,9 @@ const main = async () => {
   console.log('Depositing...!');
   await lendingPool.deposit(wethTokenAddress, AMOUNT, deployer, 0);
   console.log('Deposited...!');
+
+  await getBorrowUserData(lendingPool, deployer);
+  // Borrow Time!
 };
 
 main()

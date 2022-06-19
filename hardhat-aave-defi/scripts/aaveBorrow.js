@@ -1,9 +1,11 @@
 const { getWeth } = require('./getWeth');
-const { getNamedAccounts, network } = require('hardhat');
+const { getNamedAccounts, network, ethers } = require('hardhat');
 const { getLendingPool } = require('./getLendingPool');
 const { approveERC20 } = require('./approveERC20');
 const { AMOUNT, networkConfig } = require('../helper-hardhat-config');
 const { getBorrowUserData } = require('./getBorrowUserData');
+const { getDAIPrice } = require('./getDAIPrice');
+const { borrowDAI } = require('./borrowDAI');
 
 const main = async () => {
   // the protocol treats everything as an ERC20 token
@@ -25,8 +27,26 @@ const main = async () => {
   await lendingPool.deposit(wethTokenAddress, AMOUNT, deployer, 0);
   console.log('Deposited...!');
 
-  await getBorrowUserData(lendingPool, deployer);
+  // User data
+  let { availableBorrowsETH, totalDebtETH } = await getBorrowUserData(
+    lendingPool,
+    deployer
+  );
+
+  const daiPrice = await getDAIPrice();
+  const amountDAItoBorrow =
+    availableBorrowsETH.toString() * 0.95 * (1 / daiPrice.toNumber());
+  console.log(`You can borrow total ${amountDAItoBorrow} DAI`);
+
+  const amountDAItoBorrowWei = ethers.utils.parseEther(
+    amountDAItoBorrow.toString()
+  );
+  console.log(`You can borrow total ${amountDAItoBorrowWei} WEI`);
+
   // Borrow Time!
+  const daiTokenAddress = networkConfig[network.config.chainId].daiToken;
+  await borrowDAI(daiTokenAddress, lendingPool, amountDAItoBorrowWei, deployer);
+  await getBorrowUserData(lendingPool, deployer);
 };
 
 main()

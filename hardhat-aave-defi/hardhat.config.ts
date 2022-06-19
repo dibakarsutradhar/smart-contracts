@@ -1,11 +1,12 @@
-// require('@typechain/hardhat');
-require('@nomiclabs/hardhat-waffle');
-require('@nomiclabs/hardhat-etherscan');
-require('@nomiclabs/hardhat-ethers');
-require('hardhat-deploy');
-require('hardhat-gas-reporter');
-require('hardhat-contract-sizer');
-require('dotenv/config');
+import '@typechain/hardhat';
+import '@nomiclabs/hardhat-waffle';
+import '@nomiclabs/hardhat-etherscan';
+import '@nomiclabs/hardhat-ethers';
+import 'hardhat-deploy';
+import 'hardhat-gas-reporter';
+import 'hardhat-contract-sizer';
+import 'dotenv/config';
+import { HardhatUserConfig } from 'hardhat/types';
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -17,7 +18,7 @@ const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || 'key';
 const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || 'key';
 const MAINNET_RPC_URL = process.env.MAINNET_RPC_URL || 'key';
 
-module.exports = {
+const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
   networks: {
     hardhat: {
@@ -66,4 +67,4 @@ module.exports = {
   },
 };
 
-// export default config;
+export default config;

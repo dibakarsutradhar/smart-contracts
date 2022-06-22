@@ -27,12 +27,6 @@ const developmentChains = ['hardhat', 'localhost'];
 const imagesLocation = './images/randomNft';
 const FUND_AMOUNT = '1000000000000000000000';
 
-let tokenUris = [
-  'ipfs://QmPsddgwx2s4HE5V9so61eSR3NfGgJMkHgpTRBw1jnmTrH',
-  'ipfs://QmYzrvrN5pSqx19qXUCvJm4uau1rcpytPJGzzBkJQDdv82',
-  'ipfs://QmPU6NzQQFJKWJ6MukigvnU4D2GWTvcTtSqQu1U735UNqV',
-];
-
 module.exports = {
   networkConfig,
   developmentChains,
@@ -40,5 +34,4 @@ module.exports = {
   INITIAL_PRICE,
   imagesLocation,
   FUND_AMOUNT,
-  tokenUris,
 };

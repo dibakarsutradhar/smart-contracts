@@ -14,6 +14,7 @@
     "hardhat-contract-sizer": "^2.5.1",
     "hardhat-deploy": "^0.11.10",
     "hardhat-gas-reporter": "^1.0.8",
+    "mocha": "^10.0.0",
     "path": "^0.12.7",
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.0.0-beta.19",

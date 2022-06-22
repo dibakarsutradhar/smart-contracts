@@ -2,15 +2,21 @@ const { network, ethers } = require('hardhat');
 const {
   developmentChains,
   networkConfig,
-  tokenUris,
 } = require('../helper-hardhat-config');
 const { handleTokenUris } = require('../utils/handleTokenUris');
 const { verify } = require('../utils/verify');
+require('dotenv').config();
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = network.config.chainId;
+
+  let tokenUris = [
+    'ipfs://QmPsddgwx2s4HE5V9so61eSR3NfGgJMkHgpTRBw1jnmTrH',
+    'ipfs://QmYzrvrN5pSqx19qXUCvJm4uau1rcpytPJGzzBkJQDdv82',
+    'ipfs://QmPU6NzQQFJKWJ6MukigvnU4D2GWTvcTtSqQu1U735UNqV',
+  ];
 
   // get the IPFS hashes of the images
   if ((process.env.UPLOAD_TO_PINATA = 'true')) {
@@ -38,13 +44,13 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   }
 
   log('-----------------------------------------');
-  const args = [
+  args = [
     vrfCoordinatorV2Address,
     subscriptionId,
-    networkConfig[chainId].gasLane,
-    networkConfig[chainId].callbackGasLimit,
+    networkConfig[chainId]['gasLane'],
+    networkConfig[chainId]['callbackGasLimit'],
     tokenUris,
-    networkConfig[chainId].mintFee,
+    networkConfig[chainId]['mintFee'],
   ];
 
   const randomIpfsNft = await deploy('RandomIPFSNft', {

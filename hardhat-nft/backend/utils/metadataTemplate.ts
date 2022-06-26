@@ -1,4 +1,4 @@
-const metadataTemplate = {
+export const metadataTemplate = {
   name: '',
   description: '',
   image: '',
@@ -9,5 +9,3 @@ const metadataTemplate = {
     },
   ],
 };
-
-module.exports = { metadataTemplate };

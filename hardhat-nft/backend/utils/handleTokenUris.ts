@@ -1,10 +1,9 @@
-const { imagesLocation } = require('../helper-hardhat-config');
-const { storeImages, storeTokenUriMetadata } = require('./uploadToPinata');
+import { storeImages, storeTokenUriMetadata } from './uploadToPinata';
+import { imagesLocation } from '../helper-hardhat-config';
+import { metadataTemplate } from './metadataTemplate';
 
-const { metadataTemplate } = require('./metadataTemplate');
-
-const handleTokenUris = async (tokenUris) => {
-  tokenUris = [];
+export const handleTokenUris = async () => {
+  let tokenUris: string[] = [];
 
   // store the Image in IPFS
   // Store the metadata in IPFS
@@ -12,7 +11,7 @@ const handleTokenUris = async (tokenUris) => {
     imagesLocation
   );
 
-  for (imageUploadResponsesIndex in imageUploadResponses) {
+  for (const imageUploadResponsesIndex in imageUploadResponses) {
     // create the metadata
     let tokenUriMetadata = { ...metadataTemplate };
     tokenUriMetadata.name = files[imageUploadResponsesIndex].replace(
@@ -20,14 +19,14 @@ const handleTokenUris = async (tokenUris) => {
       ''
     );
     // upload the metadata
-    tokenUriMetadata.description = `An adorable ${tokenUriMetadata.name} pup`;
     tokenUriMetadata.image = `ipfs://${imageUploadResponses[imageUploadResponsesIndex].IpfsHash}`;
+    tokenUriMetadata.description = `An adorable ${tokenUriMetadata.name} pup`;
     console.log(`UPLOADING ${tokenUriMetadata.name}....`);
     // store the file
     const metadataUploadResponse = await storeTokenUriMetadata(
       tokenUriMetadata
     );
-    tokenUris.push(`ipfs://${metadataUploadResponse.IpfsHash}`);
+    tokenUris.push(`ipfs://${metadataUploadResponse!.IpfsHash}`);
   }
   console.log('Token URIs Uploaded...! They are: ');
   console.log(tokenUris);
@@ -35,5 +34,3 @@ const handleTokenUris = async (tokenUris) => {
 
   return tokenUris;
 };
-
-module.exports = { handleTokenUris };

@@ -1,4 +1,18 @@
-const networkConfig = {
+export interface networkConfigItem {
+  name?: string;
+  subscriptionId?: string;
+  callbackGasLimit?: string;
+  ethUsdPriceFeed?: string;
+  gasLane?: string;
+  mintFee?: string;
+  vrfCoordinatorV2?: string;
+}
+
+export interface networkConfigInfo {
+  [key: number]: networkConfigItem;
+}
+
+export const networkConfig: networkConfigInfo = {
   31337: {
     name: 'localhost',
     ethUsdPriceFeed: '0x9326BFA02ADD2366b30bacB125260Af641031331',
@@ -21,17 +35,9 @@ const networkConfig = {
   },
 };
 
-const DECIMALS = '18';
-const INITIAL_PRICE = '200000000000000000000';
-const developmentChains = ['hardhat', 'localhost'];
-const imagesLocation = './images/randomNft';
-const FUND_AMOUNT = '1000000000000000000000';
-
-module.exports = {
-  networkConfig,
-  developmentChains,
-  DECIMALS,
-  INITIAL_PRICE,
-  imagesLocation,
-  FUND_AMOUNT,
-};
+export const DECIMALS: string = '18';
+export const INITIAL_PRICE: string = '200000000000000000000';
+export const developmentChains: string[] = ['hardhat', 'localhost'];
+export const imagesLocation = './images/randomNft';
+export const FUND_AMOUNT: string = '1000000000000000000000';
+export const VERIFICATION_BLOCK_CONFIRMATIONS: number = 6;

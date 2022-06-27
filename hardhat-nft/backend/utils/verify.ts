@@ -3,7 +3,10 @@ import { run } from 'hardhat';
 type contractAddress = string;
 type args = any[];
 
-const verify = async (contractAddress: contractAddress, args: args) => {
+const verify = async (
+  contractAddress: contractAddress,
+  args: args
+): Promise<void> => {
   console.log('Verifying Contract...');
   try {
     await run('verify:verify', {

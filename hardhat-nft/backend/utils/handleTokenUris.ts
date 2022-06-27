@@ -1,8 +1,9 @@
-import { storeImages, storeTokenUriMetadata } from './uploadToPinata';
+import { PinataPinResponse } from '@pinata/sdk';
 import { imagesLocation } from '../helper-hardhat-config';
-import { metadataTemplate } from './metadataTemplate';
+import { metadataTemplate, metadataType } from './metadataTemplate';
+import { storeImages, storeTokenUriMetadata } from './uploadToPinata';
 
-export const handleTokenUris = async () => {
+export const handleTokenUris = async (): Promise<string[]> => {
   let tokenUris: string[] = [];
 
   // store the Image in IPFS
@@ -13,7 +14,7 @@ export const handleTokenUris = async () => {
 
   for (const imageUploadResponsesIndex in imageUploadResponses) {
     // create the metadata
-    let tokenUriMetadata = { ...metadataTemplate };
+    let tokenUriMetadata: metadataType = { ...metadataTemplate };
     tokenUriMetadata.name = files[imageUploadResponsesIndex].replace(
       '.png',
       ''
@@ -23,9 +24,8 @@ export const handleTokenUris = async () => {
     tokenUriMetadata.description = `An adorable ${tokenUriMetadata.name} pup`;
     console.log(`UPLOADING ${tokenUriMetadata.name}....`);
     // store the file
-    const metadataUploadResponse = await storeTokenUriMetadata(
-      tokenUriMetadata
-    );
+    const metadataUploadResponse: PinataPinResponse =
+      await storeTokenUriMetadata(tokenUriMetadata);
     tokenUris.push(`ipfs://${metadataUploadResponse!.IpfsHash}`);
   }
   console.log('Token URIs Uploaded...! They are: ');

@@ -1,10 +1,10 @@
-import { DeployFunction } from 'hardhat-deploy/types';
+import { DeployFunction, DeployResult } from 'hardhat-deploy/types';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import verify from '../utils/verify';
 import {
   developmentChains,
   VERIFICATION_BLOCK_CONFIRMATIONS,
 } from '../helper-hardhat-config';
+import verify from '../utils/verify';
 
 const deployBasicNft: DeployFunction = async (
   hre: HardhatRuntimeEnvironment
@@ -13,13 +13,15 @@ const deployBasicNft: DeployFunction = async (
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const waitBlockConfirmations = developmentChains.includes(network.name)
+  const waitBlockConfirmations: number = developmentChains.includes(
+    network.name
+  )
     ? 1
     : VERIFICATION_BLOCK_CONFIRMATIONS;
 
   log('-----------------------------------------');
   const args: any[] = [];
-  const basicNft = await deploy('BasicNFT', {
+  const basicNft: DeployResult = await deploy('BasicNFT', {
     from: deployer,
     args: args,
     log: true,

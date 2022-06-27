@@ -1,6 +1,9 @@
+import { ContractReceipt, ContractTransaction } from 'ethers';
 import { ethers } from 'hardhat';
-import { DeployFunction } from 'hardhat-deploy/types';
-import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import { Address } from 'hardhat-deploy/dist/types';
+import { DeployFunction, DeployResult } from 'hardhat-deploy/types';
+import { HardhatRuntimeEnvironment, TaskArguments } from 'hardhat/types';
+import { VRFCoordinatorV2Mock } from '../../../hardhat-scc-lottery/backend/typechain-types/@chainlink/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock';
 import {
   developmentChains,
   FUND_AMOUNT,
@@ -10,13 +13,13 @@ import {
 import { handleTokenUris } from '../utils/handleTokenUris';
 import verify from '../utils/verify';
 
-// let tokenUris = [
-//   'ipfs://QmPsddgwx2s4HE5V9so61eSR3NfGgJMkHgpTRBw1jnmTrH',
-//   'ipfs://QmYzrvrN5pSqx19qXUCvJm4uau1rcpytPJGzzBkJQDdv82',
-//   'ipfs://QmPU6NzQQFJKWJ6MukigvnU4D2GWTvcTtSqQu1U735UNqV',
-// ];
+let tokenUris: string[] = [
+  'ipfs://QmPsddgwx2s4HE5V9so61eSR3NfGgJMkHgpTRBw1jnmTrH',
+  'ipfs://QmYzrvrN5pSqx19qXUCvJm4uau1rcpytPJGzzBkJQDdv82',
+  'ipfs://QmPU6NzQQFJKWJ6MukigvnU4D2GWTvcTtSqQu1U735UNqV',
+];
 
-let tokenUris: string[];
+// let tokenUris: string[];
 
 const deployRandomNft: DeployFunction = async (
   hre: HardhatRuntimeEnvironment
@@ -24,8 +27,8 @@ const deployRandomNft: DeployFunction = async (
   const { deployments, getNamedAccounts, network } = hre;
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
-  const chainId = network.config.chainId;
-  let vrfCoordinatorV2Address, subscriptionId;
+  const chainId: number = network.config.chainId;
+  let vrfCoordinatorV2Address: Address, subscriptionId: string;
 
   // get the IPFS hashes of the images
   if ((process.env.UPLOAD_TO_PINATA = 'true')) {
@@ -38,12 +41,13 @@ const deployRandomNft: DeployFunction = async (
 
   if (chainId == 31337) {
     // Create VRF Subscription
-    const vrfCoordinatorV2Mock = await ethers.getContract(
+    const vrfCoordinatorV2Mock: VRFCoordinatorV2Mock = await ethers.getContract(
       'VRFCoordinatorV2Mock'
     );
     vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address;
-    const tx = await vrfCoordinatorV2Mock.createSubscription();
-    const txReceipt = await tx.wait();
+    const tx: ContractTransaction =
+      await vrfCoordinatorV2Mock.createSubscription();
+    const txReceipt: ContractReceipt = await tx.wait();
     subscriptionId = txReceipt.events[0].args.subId;
     await vrfCoordinatorV2Mock.fundSubscription(subscriptionId, FUND_AMOUNT);
   } else {
@@ -51,12 +55,14 @@ const deployRandomNft: DeployFunction = async (
     subscriptionId = networkConfig[chainId!].subscriptionId;
   }
 
-  const waitBlockConfirmations = developmentChains.includes(network.name)
+  const waitBlockConfirmations: number = developmentChains.includes(
+    network.name
+  )
     ? 1
     : VERIFICATION_BLOCK_CONFIRMATIONS;
 
   log('-----------------------------------------');
-  const args = [
+  const args: TaskArguments = [
     vrfCoordinatorV2Address,
     subscriptionId,
     networkConfig[chainId!]['gasLane'],
@@ -65,7 +71,7 @@ const deployRandomNft: DeployFunction = async (
     tokenUris,
   ];
 
-  const randomIpfsNft = await deploy('RandomIPFSNft', {
+  const randomIpfsNft: DeployResult = await deploy('RandomIPFSNft', {
     from: deployer,
     args: args,
     log: true,

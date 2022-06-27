@@ -2,7 +2,7 @@ export interface networkConfigItem {
   name?: string;
   subscriptionId?: string;
   callbackGasLimit?: string;
-  ethUsdPriceFeed?: string;
+  ethUsdPriceFeed: string;
   gasLane?: string;
   mintFee?: string;
   vrfCoordinatorV2?: string;

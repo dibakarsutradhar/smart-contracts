@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 
 /** External Contracts */
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /** Error Event */
 error NftMarketplace__PriceMustBeAboveZero();
@@ -15,8 +16,10 @@ error NftMarketplace__PriceNotMet(
     uint256 tokenId,
     uint256 price
 );
+error NftMarketplace__NoProceeds();
+error NftMarketplace__TransferFailed();
 
-contract NftMarketplace {
+contract NftMarketplace is ReentrancyGuard {
     /** Mapping Structure */
     struct Listing {
         uint256 price;
@@ -36,6 +39,12 @@ contract NftMarketplace {
         address indexed nftAddress,
         uint256 indexed tokenId,
         uint256 price
+    );
+
+    event ItemCanceled(
+        address indexed seller,
+        address indexed nftAddress,
+        uint256 indexed tokenId
     );
 
     /// @dev NFT Contract address -> NFT Token ID -> Listing
@@ -122,9 +131,19 @@ contract NftMarketplace {
         emit ItemListed(msg.sender, nftAddress, tokenId, price);
     }
 
+    /**
+     * @notice Method for buying listing
+     * @notice The owner of an NFT could unapprove the marketplace,
+     * which would cause this function to fail
+     * Ideally you'd also have a `createOffer` functionality.
+     * @param nftAddress Address of NFT contract
+     * @param tokenId Token ID of NFT
+     */
+
     function buyItem(address nftAddress, uint256 tokenId)
         external
         payable
+        nonReentrant
         isListed(nftAddress, tokenId)
     {
         Listing memory listedItem = s_listings[nftAddress][tokenId];
@@ -145,5 +164,72 @@ contract NftMarketplace {
             tokenId
         );
         emit ItemBought(msg.sender, nftAddress, tokenId, listedItem.price);
+    }
+
+    /**
+     * @notice Method for cancelling listing
+     * @param nftAddress Address of NFT contract
+     * @param tokenId Token ID of NFT
+     */
+
+    function cancelListing(address nftAddress, uint256 tokenId)
+        external
+        isOwner(nftAddress, tokenId, msg.sender)
+        isListed(nftAddress, tokenId)
+    {
+        delete (s_listings[nftAddress][tokenId]);
+        emit ItemCanceled(msg.sender, nftAddress, tokenId);
+    }
+
+    /**
+     * @notice Method for updating listing
+     * @param nftAddress Address of NFT contract
+     * @param tokenId Token ID of NFT
+     * @param newPrice Price in Wei of the item
+     */
+
+    function updateListing(
+        address nftAddress,
+        uint256 tokenId,
+        uint256 newPrice
+    )
+        external
+        isListed(nftAddress, tokenId)
+        isOwner(nftAddress, tokenId, msg.sender)
+    {
+        s_listings[nftAddress][tokenId].price = newPrice;
+        emit ItemListed(msg.sender, nftAddress, tokenId, newPrice);
+    }
+
+    /**
+     * @notice Method for withdrawing proceeds from sales
+     */
+
+    function withdrawProceeds() external {
+        uint256 proceeds = s_proceeds[msg.sender];
+        if (proceeds <= 0) {
+            revert NftMarketplace__NoProceeds();
+        }
+        s_proceeds[msg.sender] = 0;
+        (bool success, ) = payable(msg.sender).call{value: proceeds}("");
+        if (!success) {
+            revert NftMarketplace__TransferFailed();
+        }
+    }
+
+    /**
+     * Getter Pure/View Functions
+     */
+
+    function getListing(address nftAddress, uint256 tokenId)
+        external
+        view
+        returns (Listing memory)
+    {
+        return s_listings[nftAddress][tokenId];
+    }
+
+    function getProceeds(address seller) external view returns (uint256) {
+        return s_proceeds[seller];
     }
 }

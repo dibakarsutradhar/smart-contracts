@@ -54,4 +54,68 @@ const { developmentChains } = require('../../helper-hardhat-config');
           assert(listing.seller.toString() == deployer.address);
         });
       });
+
+      describe('cancelListing', () => {
+        it('reverts if there is no listing', async () => {
+          const error = `NftMarketplace__NotListed("${basicNft.address}", ${TOKEN_ID})`;
+          await expect(
+            nftMarketplace.cancelListing(basicNft.address, TOKEN_ID)
+          ).to.be.revertedWith(error);
+        });
+
+        it('reverts if not owner', async () => {
+          await nftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE);
+          nftMarketplace = nftMarketplaceContract.connect(player);
+          await basicNft.approve(player.address, TOKEN_ID);
+          await expect(
+            nftMarketplace.cancelListing(basicNft.address, TOKEN_ID)
+          ).to.be.revertedWith('NftMarketplace__NotOwner');
+        });
+
+        it('emits an event and cancel listing', async () => {
+          await nftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE);
+          expect(
+            await nftMarketplace.cancelListing(basicNft.address, TOKEN_ID)
+          ).to.emit('ItemCanceled');
+          const listing = await nftMarketplace.getListing(
+            basicNft.address,
+            TOKEN_ID
+          );
+          assert(listing.price.toString() == '0');
+        });
+      });
+
+      describe('updateListing', () => {
+        it('reverts if not owner', async () => {
+          await nftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE);
+          nftMarketplace = nftMarketplaceContract.connect(player);
+          await expect(
+            nftMarketplace.updateListing(basicNft.address, TOKEN_ID, PRICE)
+          ).to.be.revertedWith('NftMarketplace__NotOwner');
+        });
+
+        it('reverts if not listed', async () => {
+          const error = `NftMarketplace__NotListed("${basicNft.address}", ${TOKEN_ID})`;
+          await expect(
+            nftMarketplace.updateListing(basicNft.address, TOKEN_ID, PRICE)
+          ).to.be.revertedWith(error);
+        });
+
+        it('updates the price of the item', async () => {
+          const updatedPrice = ethers.utils.parseEther('0.2');
+          await nftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE);
+          expect(
+            await nftMarketplace.updateListing(
+              basicNft.address,
+              TOKEN_ID,
+              updatedPrice
+            )
+          ).to.emit('ItemListed');
+          const listing = await nftMarketplace.getListing(
+            basicNft.address,
+            TOKEN_ID
+          );
+          assert(listing.price.toString() == updatedPrice.toString());
+        });
+      });
     });

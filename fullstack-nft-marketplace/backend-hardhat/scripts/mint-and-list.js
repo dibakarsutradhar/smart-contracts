@@ -15,11 +15,7 @@ const mintAndList = async () => {
   const approvalTx = await basicNft.approve(nftMarketplace.address, tokenId);
   await approvalTx.wait(1);
   console.log('Listing NFT....');
-  const tx = await nftMarketplace.listItem(
-    nftMarketplace.address,
-    tokenId,
-    PRICE
-  );
+  const tx = await nftMarketplace.listItem(basicNft.address, tokenId, PRICE);
   await tx.wait(1);
   console.log('Listed!');
 };

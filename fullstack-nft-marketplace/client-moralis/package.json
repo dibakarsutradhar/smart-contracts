@@ -9,12 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "moralis": "^1.8.1",
     "next": "12.2.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-moralis": "^1.4.0",
+    "web3uikit": "^0.1.163"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.7",
     "eslint": "8.18.0",
-    "eslint-config-next": "12.2.0"
+    "eslint-config-next": "12.2.0",
+    "postcss": "^8.4.14",
+    "tailwindcss": "^3.1.4"
   }
 }

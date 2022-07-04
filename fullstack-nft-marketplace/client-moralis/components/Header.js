@@ -12,7 +12,7 @@ const Header = () => {
         <Link href="/sell-nft">
           <a className="mr-4 p-6">Sell NFT</a>
         </Link>
-        <ConnectButton moralisAuth={false} />;
+        <ConnectButton moralisAuth={false} />
       </div>
     </nav>
   );

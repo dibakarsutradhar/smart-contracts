@@ -1,14 +1,5 @@
-import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>NFT Marketplace</title>
-        <meta name="description" content="NFT Marketplace" />
-      </Head>
-      HI
-    </div>
-  );
+  return <div className={styles.container}>HI</div>;
 }

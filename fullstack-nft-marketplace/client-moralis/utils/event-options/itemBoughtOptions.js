@@ -41,3 +41,5 @@ let itemBoughtOptions = {
   },
   tableName: 'ItemBought',
 };
+
+module.exports = { itemBoughtOptions };

@@ -41,3 +41,5 @@ let itemListedOptions = {
   },
   tableName: 'ItemListed',
 };
+
+module.exports = { itemListedOptions };

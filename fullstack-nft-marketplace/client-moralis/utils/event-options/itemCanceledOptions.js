@@ -35,3 +35,5 @@ let itemCanceledOptions = {
   },
   tableName: 'ItemCanceled',
 };
+
+module.exports = { itemCanceledOptions };

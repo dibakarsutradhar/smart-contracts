@@ -3,9 +3,13 @@ require('dotenv').config();
 const contractAddresses = require('./constants/networkMapping.json');
 const {
   itemListedOptions,
+} = require('./utils/event-options/itemListedOptions');
+const {
   itemBoughtOptions,
+} = require('./utils/event-options/itemBoughtOptions');
+const {
   itemCanceledOptions,
-} = require('./utils/event-options');
+} = require('./utils/event-options/itemCanceledOptions');
 
 let chainId = process.env.chainId || 31337;
 const contractAddress = contractAddresses[chainId]['NftMarketplace'][0];
@@ -22,13 +26,17 @@ const main = async () => {
   const listedResponse = await Moralis.Cloud.run(
     'watchContractEvent',
     itemListedOptions,
-    { useMasterKey: true }
+    {
+      useMasterKey: true,
+    }
   );
 
   const boughtResponse = await Moralis.Cloud.run(
     'watchContractEvent',
     itemBoughtOptions,
-    { useMasterKey: true }
+    {
+      useMasterKey: true,
+    }
   );
 
   const canceledResponse = await Moralis.Cloud.run(

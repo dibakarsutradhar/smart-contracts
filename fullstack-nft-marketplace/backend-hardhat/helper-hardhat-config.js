@@ -26,6 +26,10 @@ const INITIAL_PRICE = '200000000000000000000';
 const developmentChains = ['hardhat', 'localhost'];
 
 const frontEndContractsFile = '../client-moralis/constants/networkMapping.json';
+const frontEndAbiLocation = '../client-moralis/constants/';
+
+const BLOCKS = 2;
+const SLEEP_AMOUNT = 1000;
 
 module.exports = {
   networkConfig,
@@ -33,4 +37,7 @@ module.exports = {
   DECIMALS,
   INITIAL_PRICE,
   frontEndContractsFile,
+  frontEndAbiLocation,
+  BLOCKS,
+  SLEEP_AMOUNT,
 };

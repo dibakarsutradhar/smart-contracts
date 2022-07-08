@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { MoralisProvider } from 'react-moralis';
+import { NotificationProvider } from 'web3uikit';
 import Header from '../components/Header';
 import '../styles/globals.css';
 
@@ -15,8 +16,10 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MoralisProvider appId={APP_ID} serverUrl={SERVER_URL}>
-        <Header />
-        <Component {...pageProps} />;
+        <NotificationProvider>
+          <Header />
+          <Component {...pageProps} />;
+        </NotificationProvider>
       </MoralisProvider>
     </>
   );

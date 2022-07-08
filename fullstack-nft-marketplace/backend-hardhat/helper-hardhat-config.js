@@ -28,6 +28,9 @@ const developmentChains = ['hardhat', 'localhost'];
 const frontEndContractsFile = '../client-moralis/constants/networkMapping.json';
 const frontEndAbiLocation = '../client-moralis/constants/';
 
+const BLOCKS = 2;
+const SLEEP_AMOUNT = 1000;
+
 module.exports = {
   networkConfig,
   developmentChains,
@@ -35,4 +38,6 @@ module.exports = {
   INITIAL_PRICE,
   frontEndContractsFile,
   frontEndAbiLocation,
+  BLOCKS,
+  SLEEP_AMOUNT,
 };

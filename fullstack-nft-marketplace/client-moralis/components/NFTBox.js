@@ -3,7 +3,7 @@ import { useWeb3Contract, useMoralis } from 'react-moralis';
 import nftMarketplaceAbi from '../constants/NftMarketplace.json';
 import nftAbi from '../constants/BasicNft.json';
 import Image from 'next/image';
-import { Card } from 'web3uikit';
+import { Card, useNotification } from 'web3uikit';
 import { ethers } from 'ethers';
 import truncateStr from '../utils/truncateStr';
 import UpdateListingModal from './UpdateListingModal';
@@ -22,12 +22,24 @@ const NFTBox = ({
   const [tokenDesc, setTokenDesc] = useState('');
   const [showModal, setShowModal] = useState(false);
   const hideModal = () => setShowModal(false);
+  const dispatch = useNotification();
 
   const { runContractFunction: getTokenURI } = useWeb3Contract({
     abi: nftAbi,
     contractAddress: nftAddress,
     functionName: 'tokenURI',
     params: {
+      tokenId: tokenId,
+    },
+  });
+
+  const { runContractFunction: buyItem } = useWeb3Contract({
+    abi: nftMarketplaceAbi,
+    contractAddress: marketplaceAddress,
+    functionName: 'buyItem',
+    msgValue: price,
+    params: {
+      nftAddress: nftAddress,
       tokenId: tokenId,
     },
   });
@@ -66,7 +78,21 @@ const NFTBox = ({
     : truncateStr(seller || '', 15);
 
   const handleCardClick = () => {
-    isOwnedByUser ? setShowModal(true) : console.log('lets buy');
+    isOwnedByUser
+      ? setShowModal(true)
+      : buyItem({
+          onError: (error) => console.log(error),
+          onSuccess: () => handleBuyItemSuccess(),
+        });
+  };
+
+  const handleBuyItemSuccess = () => {
+    dispatch({
+      type: 'success',
+      message: 'Item Bought',
+      title: 'Item Bought',
+      position: 'topR',
+    });
   };
 
   return (

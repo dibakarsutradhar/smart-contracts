@@ -1,16 +1,18 @@
-import { Form, useNotification } from 'web3uikit';
+import { Button, Form, useNotification } from 'web3uikit';
 import { ethers } from 'ethers';
 import { useMoralis, useWeb3Contract } from 'react-moralis';
 
 import networkMapping from '../constants/networkMapping.json';
 import nftMarketplaceAbi from '../constants/NftMarketplace.json';
 import nftAbi from '../constants/BasicNft.json';
+import { useEffect, useState } from 'react';
 
 export default function SellNft() {
-  const { chainId } = useMoralis();
+  const { chainId, account, isWeb3Enabled } = useMoralis();
   const chainString = chainId ? parseInt(chainId).toString() : '31337';
   const marketplaceAddress = networkMapping[chainString].NftMarketplace[0];
   const dispatch = useNotification();
+  const [proceeds, setProceeds] = useState('0');
 
   const { runContractFunction } = useWeb3Contract();
 
@@ -59,7 +61,8 @@ export default function SellNft() {
     });
   };
 
-  const handleListSuccess = async () => {
+  const handleListSuccess = async (tx) => {
+    await tx.wait(1);
     dispatch({
       type: 'success',
       message: 'NFT Listing',
@@ -67,6 +70,39 @@ export default function SellNft() {
       position: 'topR',
     });
   };
+
+  const handleWithdrawSuccess = async (tx) => {
+    await tx.wait(1);
+    dispatch({
+      type: 'success',
+      message: 'Withdrawing proceeds',
+      position: 'topR',
+    });
+  };
+
+  const setupUI = async () => {
+    const returnedProceeds = await runContractFunction({
+      params: {
+        abi: nftMarketplaceAbi,
+        contractAddress: marketplaceAddress,
+        functionName: 'getProceeds',
+        params: {
+          seller: account,
+        },
+      },
+      onError: (error) => console.log(error),
+    });
+
+    if (returnedProceeds) {
+      setProceeds(returnedProceeds.toString());
+    }
+  };
+
+  useEffect(() => {
+    if (isWeb3Enabled) {
+      setupUI();
+    }
+  }, [proceeds, account, isWeb3Enabled, chainId]);
 
   return (
     <div>
@@ -96,6 +132,27 @@ export default function SellNft() {
         title="Sell Your NFT!"
         id="Main Form"
       />
+      <div>Withdraw {proceeds} proceeds</div>
+      {proceeds != '0' ? (
+        <Button
+          onClick={() => {
+            runContractFunction({
+              params: {
+                abi: nftMarketplaceAbi,
+                contractAddress: marketplaceAddress,
+                functionName: 'withdrawProceeds',
+                params: {},
+              },
+              onError: (error) => console.log(error),
+              onSuccess: handleWithdrawSuccess,
+            });
+          }}
+          text="Withdraw"
+          type="button"
+        />
+      ) : (
+        <div>No proceeds detected</div>
+      )}
     </div>
   );
 }

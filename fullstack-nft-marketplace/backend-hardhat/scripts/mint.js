@@ -2,25 +2,22 @@ const { ethers, network } = require('hardhat');
 const { BLOCKS, SLEEP_AMOUNT } = require('../helper-hardhat-config');
 const { moveBlocks } = require('../utils/move-blocks');
 
-const TOKEN_ID = 4;
-
-const buyItem = async () => {
-  const nftMarketplace = await ethers.getContract('NftMarketplace');
+const mint = async () => {
   const basicNft = await ethers.getContract('BasicNFT');
-  const listing = await nftMarketplace.getListing(basicNft.address, TOKEN_ID);
-  const price = listing.price.toString();
-  const tx = await nftMarketplace.buyItem(basicNft.address, TOKEN_ID, {
-    value: price,
-  });
-  await tx.wait(1);
-  console.log('NFT Bought');
+  console.log('Minting....!');
+
+  const mintTx = await basicNft.mintNft();
+  const mintTxReceipt = await mintTx.wait(1);
+  const tokenId = mintTxReceipt.events[0].args.tokenId;
+  console.log(`Got Token ID ${tokenId}`);
+  console.log(`NFT Address: ${basicNft.address}`);
 
   if (network.config.chainId == '31337') {
     await moveBlocks(BLOCKS, (sleepAmount = SLEEP_AMOUNT));
   }
 };
 
-buyItem()
+mint()
   .then(() => process.exit(0))
   .catch((error) => {
     console.log(error);

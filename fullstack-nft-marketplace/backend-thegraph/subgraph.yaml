@@ -6,8 +6,9 @@ dataSources:
     name: NftMarketplace
     network: rinkeby
     source:
-      address: "0xf780c38a40765B2fd4Ff002FE1Ad0e476D1dAdA8"
+      address: '0xf780c38a40765B2fd4Ff002FE1Ad0e476D1dAdA8'
       abi: NftMarketplace
+      startBlock: 11006835
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

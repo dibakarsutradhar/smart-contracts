@@ -11,7 +11,7 @@ import {
   ItemListed
 } from '../generated/schema';
 
-export const handleItemBought = (event: ItemBoughtEvent): void => {
+export function handleItemBought(event: ItemBoughtEvent): void {
   // Save that event in our graph
   // update our ActiveItems
   // get or create an itemlisted object
@@ -37,9 +37,9 @@ export const handleItemBought = (event: ItemBoughtEvent): void => {
 
   itemBought.save();
   activeItem!.save();
-};
+}
 
-export const handleItemCanceled = (event: ItemCanceledEvent): void => {
+export function handleItemCanceled(event: ItemCanceledEvent): void {
   let itemCanceled = ItemCanceled.load(
     getIdFromEventParams(event.params.tokenId, event.params.nftAddress)
   );
@@ -62,9 +62,9 @@ export const handleItemCanceled = (event: ItemCanceledEvent): void => {
 
   itemCanceled.save();
   activeItem!.save();
-};
+}
 
-export const handleItemListed = (event: ItemListedEvent): void => {
+export function handleItemListed(event: ItemListedEvent): void {
   let itemListed = ItemListed.load(
     getIdFromEventParams(event.params.tokenId, event.params.nftAddress)
   );
@@ -96,10 +96,14 @@ export const handleItemListed = (event: ItemListedEvent): void => {
   itemListed.price = event.params.price;
   activeItem.price = event.params.price;
 
+  activeItem.buyer = Address.fromString(
+    '0x0000000000000000000000000000000000000000'
+  );
+
   itemListed.save();
   activeItem.save();
-};
+}
 
-const getIdFromEventParams = (tokenId: BigInt, nftAddress: Address): string => {
+function getIdFromEventParams(tokenId: BigInt, nftAddress: Address): string {
   return tokenId.toHexString() + nftAddress.toHexString();
-};
+}

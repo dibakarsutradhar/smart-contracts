@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { MoralisProvider } from 'react-moralis';
 import { NotificationProvider } from 'web3uikit';
 import Header from '../components/Header';
+import '../styles/globals.css';
 
 const client = new ApolloClient({
   uri: process.env.NEXT_PUBLIC_SUBGRAPH_URL,

@@ -1,11 +1,14 @@
-require('@nomiclabs/hardhat-waffle');
-require('@nomiclabs/hardhat-etherscan');
-require('@nomiclabs/hardhat-ethers');
-require('hardhat-deploy');
-require('hardhat-gas-reporter');
-require('hardhat-contract-sizer');
-require('dotenv/config');
-require('solidity-coverage');
+import '@nomiclabs/hardhat-ethers';
+import '@nomiclabs/hardhat-etherscan';
+import '@nomiclabs/hardhat-waffle';
+import '@typechain/ethers-v5';
+import '@typechain/hardhat';
+import 'dotenv/config';
+import 'hardhat-contract-sizer';
+import 'hardhat-deploy';
+import 'hardhat-gas-reporter';
+import { HardhatUserConfig } from 'hardhat/types';
+import 'solidity-coverage';
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -16,7 +19,7 @@ const RINKEBY_PRIVATE_KEY = process.env.RINKEBY_PRIVATE_KEY || '0xkey';
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || 'key';
 const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || 'key';
 
-module.exports = {
+const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
   networks: {
     hardhat: {
@@ -27,7 +30,6 @@ module.exports = {
       url: RINKEBY_RPC_URL,
       accounts: [RINKEBY_PRIVATE_KEY],
       chainId: 4,
-      blockConfirmations: 6,
     },
   },
   solidity: {
@@ -62,3 +64,5 @@ module.exports = {
     timeout: 400000, // 400 seconds
   },
 };
+
+export default config;

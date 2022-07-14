@@ -1,11 +1,14 @@
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import Head from 'next/head';
 import { MoralisProvider } from 'react-moralis';
 import { NotificationProvider } from 'web3uikit';
 import Header from '../components/Header';
 import '../styles/globals.css';
 
-const APP_ID = process.env.NEXT_PUBLIC_MORALIS_APP_ID;
-const SERVER_URL = process.env.NEXT_PUBLIC_MORALIS_SERVER_URL;
+const client = new ApolloClient({
+  uri: process.env.NEXT_PUBLIC_SUBGRAPH_URL,
+  cache: new InMemoryCache(),
+});
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -16,10 +19,12 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MoralisProvider initializeOnMount={false}>
-        <NotificationProvider>
-          <Header />
-          <Component {...pageProps} />;
-        </NotificationProvider>
+        <ApolloProvider client={client}>
+          <NotificationProvider>
+            <Header />
+            <Component {...pageProps} />;
+          </NotificationProvider>
+        </ApolloProvider>
       </MoralisProvider>
     </>
   );

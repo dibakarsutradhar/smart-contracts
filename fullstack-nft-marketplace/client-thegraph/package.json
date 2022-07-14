@@ -11,6 +11,8 @@
     "moralis:cloud": "moralis-admin-cli watch-cloud-folder --moralisSubdomain ecuexgkgdyi5.usemoralis.com --autoSave 1 --moralisCloudfolder ./cloudFunctions"
   },
   "dependencies": {
+    "@apollo/client": "^3.6.9",
+    "graphql": "^16.5.0",
     "moralis": "^1.8.1",
     "next": "12.2.0",
     "react": "18.2.0",

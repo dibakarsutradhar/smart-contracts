@@ -4,8 +4,8 @@
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
-    "outDir": "dist"
-    // "strictNullChecks": false
+    "outDir": "dist",
+    "strictNullChecks": false
     // optional:
     // "suppressImplicitAnyIndexErrors": true
     // "types": ["node"]

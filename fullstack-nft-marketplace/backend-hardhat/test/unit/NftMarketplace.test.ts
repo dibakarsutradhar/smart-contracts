@@ -1,16 +1,23 @@
-const { expect, assert } = require('chai');
-const { network, ethers, deployments } = require('hardhat');
-const { developmentChains } = require('../../helper-hardhat-config');
+import { assert, expect } from 'chai';
+import { BigNumber, Signer } from 'ethers';
+import { deployments, ethers, network } from 'hardhat';
+import { developmentChains } from '../../helper-hardhat-config';
+import { BasicNFT, NftMarketplace } from '../../typechain-types';
 
 !developmentChains.includes(network.name)
   ? describe.skip
   : describe('Nft Marketplace Unit Test', () => {
-      let nftMarketplace, nftMarketplaceContract, basicNft, basicNftContract;
-      const PRICE = ethers.utils.parseEther('0.1');
-      const TOKEN_ID = 0;
+      let nftMarketplace: NftMarketplace,
+        nftMarketplaceContract: NftMarketplace,
+        basicNft: BasicNFT,
+        basicNftContract: BasicNFT;
+      const PRICE: BigNumber = ethers.utils.parseEther('0.1');
+      const TOKEN_ID: number = 0;
+      let deployer: Signer;
+      let player: Signer;
 
       beforeEach(async () => {
-        accounts = await ethers.getSigners();
+        const accounts = await ethers.getSigners();
         deployer = accounts[0];
         player = accounts[1];
         await deployments.fixture(['all']);
@@ -26,7 +33,7 @@ const { developmentChains } = require('../../helper-hardhat-config');
         it('emits an event after listing an item', async () => {
           expect(
             await nftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE)
-          ).to.emit('ItemListed');
+          ).to.emit(nftMarketplace, 'ItemListed');
         });
 
         it("exclusively items that haven't been listed", async () => {
@@ -51,7 +58,7 @@ const { developmentChains } = require('../../helper-hardhat-config');
             TOKEN_ID
           );
           assert(listing.price.toString() == PRICE.toString());
-          assert(listing.seller.toString() == deployer.address);
+          assert(listing.seller.toString() == (await deployer.getAddress()));
         });
       });
 
@@ -66,7 +73,7 @@ const { developmentChains } = require('../../helper-hardhat-config');
         it('reverts if not owner', async () => {
           await nftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE);
           nftMarketplace = nftMarketplaceContract.connect(player);
-          await basicNft.approve(player.address, TOKEN_ID);
+          await basicNft.approve(await player.getAddress(), TOKEN_ID);
           await expect(
             nftMarketplace.cancelListing(basicNft.address, TOKEN_ID)
           ).to.be.revertedWith('NftMarketplace__NotOwner');
@@ -76,7 +83,7 @@ const { developmentChains } = require('../../helper-hardhat-config');
           await nftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE);
           expect(
             await nftMarketplace.cancelListing(basicNft.address, TOKEN_ID)
-          ).to.emit('ItemCanceled');
+          ).to.emit(nftMarketplace, 'ItemCanceled');
           const listing = await nftMarketplace.getListing(
             basicNft.address,
             TOKEN_ID
@@ -110,7 +117,7 @@ const { developmentChains } = require('../../helper-hardhat-config');
               TOKEN_ID,
               updatedPrice
             )
-          ).to.emit('ItemListed');
+          ).to.emit(nftMarketplace, 'ItemListed');
           const listing = await nftMarketplace.getListing(
             basicNft.address,
             TOKEN_ID
@@ -140,12 +147,12 @@ const { developmentChains } = require('../../helper-hardhat-config');
             await nftMarketplace.buyItem(basicNft.address, TOKEN_ID, {
               value: PRICE,
             })
-          ).to.emit('ItemBought');
+          ).to.emit(nftMarketplace, 'ItemBought');
           const newOwner = await basicNft.ownerOf(TOKEN_ID);
           const deployerProceeds = await nftMarketplace.getProceeds(
-            deployer.address
+            await deployer.getAddress()
           );
-          assert(newOwner.toString() == player.address);
+          assert(newOwner.toString() == (await player.getAddress()));
           assert(deployerProceeds.toString() == PRICE.toString());
         });
       });
@@ -166,7 +173,7 @@ const { developmentChains } = require('../../helper-hardhat-config');
           nftMarketplace = nftMarketplaceContract.connect(deployer);
 
           const prevDeployerProceeds = await nftMarketplace.getProceeds(
-            deployer.address
+            await deployer.getAddress()
           );
           const prevDeployerBalance = await deployer.getBalance();
           const txResponse = await nftMarketplace.withdrawProceeds();

@@ -1,3 +1,4 @@
+import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { MoralisProvider } from 'react-moralis';
 import { NotificationProvider } from 'web3uikit';
@@ -7,7 +8,7 @@ import '../styles/globals.css';
 const APP_ID = process.env.NEXT_PUBLIC_MORALIS_APP_ID;
 const SERVER_URL = process.env.NEXT_PUBLIC_MORALIS_SERVER_URL;
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
@@ -15,7 +16,11 @@ function MyApp({ Component, pageProps }) {
         <meta name="description" content="NFT Marketplace" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MoralisProvider appId={APP_ID} serverUrl={SERVER_URL}>
+      <MoralisProvider
+        appId={APP_ID!}
+        serverUrl={SERVER_URL!}
+        initializeOnMount={true}
+      >
         <NotificationProvider>
           <Header />
           <Component {...pageProps} />;

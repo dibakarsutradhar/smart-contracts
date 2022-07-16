@@ -1,14 +1,13 @@
-import styles from '../styles/Home.module.css';
+import type { NextPage } from 'next';
 import { useMoralis, useMoralisQuery } from 'react-moralis';
 import NFTBox from '../components/NFTBox';
 
-export default function Home() {
+const Home: NextPage = () => {
   const { isWeb3Enabled } = useMoralis();
   const { data: listedNfts, isFetching: fetchingListedNfts } = useMoralisQuery(
     'ActiveItem',
     (query) => query.limit(10).descending('tokenId')
   );
-  console.log(listedNfts);
 
   return (
     <div className="container mx-auto">
@@ -41,4 +40,6 @@ export default function Home() {
       </div>
     </div>
   );
-}
+};
+
+export default Home;

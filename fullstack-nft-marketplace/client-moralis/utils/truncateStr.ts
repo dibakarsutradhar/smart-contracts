@@ -1,4 +1,4 @@
-const truncateStr = (fullStr, strLen) => {
+const truncateStr = (fullStr: string, strLen: number) => {
   if (fullStr.length <= strLen) return fullStr;
 
   const separator = '...';

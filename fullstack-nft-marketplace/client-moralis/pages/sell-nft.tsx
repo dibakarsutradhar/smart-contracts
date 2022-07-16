@@ -1,27 +1,38 @@
-import { Button, Form, useNotification } from 'web3uikit';
 import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
 import { useMoralis, useWeb3Contract } from 'react-moralis';
+import { Button, Form, useNotification } from 'web3uikit';
 
+import nftAbi from '../constants/BasicNft.json';
 import networkMapping from '../constants/networkMapping.json';
 import nftMarketplaceAbi from '../constants/NftMarketplace.json';
-import nftAbi from '../constants/BasicNft.json';
-import { useEffect, useState } from 'react';
 
-export default function SellNft() {
+type NetworkConfigItem = {
+  NftMarketplace: string[];
+};
+
+type NetworkConfigMap = {
+  [chainId: string]: NetworkConfigItem;
+};
+
+const SellNft = () => {
   const { chainId, account, isWeb3Enabled } = useMoralis();
   const chainString = chainId ? parseInt(chainId).toString() : '31337';
-  const marketplaceAddress = networkMapping[chainString].NftMarketplace[0];
-  const dispatch = useNotification();
+  const marketplaceAddress = (networkMapping as NetworkConfigMap)[chainString]
+    .NftMarketplace[0];
   const [proceeds, setProceeds] = useState('0');
 
+  const dispatch = useNotification();
+
+  // @ts-ignore
   const { runContractFunction } = useWeb3Contract();
 
-  const approveAndList = async (data) => {
+  const approveAndList = async (data: any) => {
     console.log('Approving...');
     const nftAddress = data.data[0].inputResult;
     const tokenId = data.data[1].inputResult;
     const price = ethers.utils
-      .parseEther(data.data[2].inputResult, 'ether')
+      .parseUnits(data.data[2].inputResult, 'ether')
       .toString();
 
     const approveOptions = {
@@ -41,7 +52,11 @@ export default function SellNft() {
     });
   };
 
-  const handleApproveSuccess = async (nftAddress, tokenId, price) => {
+  const handleApproveSuccess = async (
+    nftAddress: string,
+    tokenId: string,
+    price: string
+  ) => {
     console.log('Listing...!');
     const listOptions = {
       abi: nftMarketplaceAbi,
@@ -61,8 +76,7 @@ export default function SellNft() {
     });
   };
 
-  const handleListSuccess = async (tx) => {
-    await tx.wait(1);
+  const handleListSuccess = async () => {
     dispatch({
       type: 'success',
       message: 'NFT Listing',
@@ -71,8 +85,7 @@ export default function SellNft() {
     });
   };
 
-  const handleWithdrawSuccess = async (tx) => {
-    await tx.wait(1);
+  const handleWithdrawSuccess = async () => {
     dispatch({
       type: 'success',
       message: 'Withdrawing proceeds',
@@ -155,4 +168,6 @@ export default function SellNft() {
       )}
     </div>
   );
-}
+};
+
+export default SellNft;

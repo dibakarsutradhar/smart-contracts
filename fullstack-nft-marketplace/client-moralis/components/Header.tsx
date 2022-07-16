@@ -1,5 +1,5 @@
-import { ConnectButton } from 'web3uikit';
 import Link from 'next/link';
+import { ConnectButton } from 'web3uikit';
 
 const Header = () => {
   return (

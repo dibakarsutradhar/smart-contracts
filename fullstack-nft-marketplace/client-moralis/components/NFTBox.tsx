@@ -1,25 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { useWeb3Contract, useMoralis } from 'react-moralis';
-import nftMarketplaceAbi from '../constants/NftMarketplace.json';
-import nftAbi from '../constants/BasicNft.json';
-import Image from 'next/image';
-import { Card, useNotification } from 'web3uikit';
 import { ethers } from 'ethers';
+import type { NextPage } from 'next';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { useMoralis, useWeb3Contract } from 'react-moralis';
+import { Card, useNotification } from 'web3uikit';
+import nftAbi from '../constants/BasicNft.json';
+import nftMarketplaceAbi from '../constants/NftMarketplace.json';
 import truncateStr from '../utils/truncateStr';
 import UpdateListingModal from './UpdateListingModal';
 
-const NFTBox = ({
+interface NFTBoxProps {
+  price?: string;
+  tokenId: string;
+  nftAddress: string;
+  marketplaceAddress: string;
+  seller?: string;
+}
+
+const NFTBox: NextPage<NFTBoxProps> = ({
   price,
-  nft,
   tokenId,
   nftAddress,
   marketplaceAddress,
   seller,
-}) => {
+}: NFTBoxProps) => {
   const { isWeb3Enabled, account } = useMoralis();
-  const [imageURI, setImageURI] = useState('');
-  const [tokenName, setTokenName] = useState('');
-  const [tokenDesc, setTokenDesc] = useState('');
+  const [imageURI, setImageURI] = useState<string | undefined>();
+  const [tokenName, setTokenName] = useState<string | undefined>();
+  const [tokenDesc, setTokenDesc] = useState<string | undefined>();
   const [showModal, setShowModal] = useState(false);
   const hideModal = () => setShowModal(false);
   const dispatch = useNotification();
@@ -51,10 +59,16 @@ const NFTBox = ({
     // using the image tag from the tokeURI, get the image
     if (tokenURI) {
       // IPFS Gateway: A server that will return IPFS files from a "normal" URL
-      const requestURL = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
+      const requestURL = (tokenURI as string).replace(
+        'ipfs://',
+        'https://ipfs.io/ipfs/'
+      );
       const tokenURIResponse = await (await fetch(requestURL)).json();
       const imageURI = tokenURIResponse.image;
-      const imageUriUrl = imageURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
+      const imageUriUrl = (imageURI as string).replace(
+        'ipfs://',
+        'https://ipfs.io/ipfs/'
+      );
       setImageURI(imageUriUrl);
       setTokenName(tokenURIResponse.name);
       setTokenDesc(tokenURIResponse.description);
@@ -72,8 +86,8 @@ const NFTBox = ({
     }
   }, [isWeb3Enabled]);
 
-  const isOwnedByUser = seller == account || seller === undefined;
-  const formattedSellerAddress = isOwnedByUser
+  const isOwnedByUser: boolean = seller == account || seller === undefined;
+  const formattedSellerAddress: string = isOwnedByUser
     ? 'you'
     : truncateStr(seller || '', 15);
 
@@ -96,7 +110,7 @@ const NFTBox = ({
   };
 
   return (
-    <div>
+    <div className="p-2">
       {imageURI ? (
         <div>
           <UpdateListingModal
@@ -123,9 +137,11 @@ const NFTBox = ({
                   height="200"
                   width="200"
                 />
-                <div className="font-bold">
-                  {ethers.utils.formatUnits(price, 'ether')} ETH
-                </div>
+                {price && (
+                  <div className="font-bold">
+                    {ethers.utils.formatUnits(price, 'ether')} ETH
+                  </div>
+                )}
               </div>
             </div>
           </Card>

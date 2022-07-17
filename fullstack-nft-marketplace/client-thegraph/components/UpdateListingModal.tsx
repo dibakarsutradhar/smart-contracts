@@ -1,9 +1,17 @@
 import { ethers } from 'ethers';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useWeb3Contract } from 'react-moralis';
 import { Input, Modal, useNotification } from 'web3uikit';
 
 import nftMarketplaceAbi from '../constants/NftMarketplace.json';
+
+interface UpdateListingModalProps {
+  tokenId: string;
+  nftAddress: string;
+  marketplaceAddress: string;
+  isVisible: boolean;
+  onClose: () => void;
+}
 
 const UpdateListingModal = ({
   tokenId,
@@ -11,12 +19,13 @@ const UpdateListingModal = ({
   marketplaceAddress,
   isVisible,
   onClose,
-}) => {
+}: UpdateListingModalProps) => {
   const dispatch = useNotification();
-  const [priceToUpdateListingWith, setPriceToUpdateListingWith] = useState(0);
+  const [priceToUpdateListingWith, setPriceToUpdateListingWith] = useState<
+    string | undefined
+  >();
 
-  const handleUpdateListingSuccess = async (tx) => {
-    await tx.wait(1);
+  const handleUpdateListingSuccess = async () => {
     dispatch({
       type: 'success',
       message: 'Listing updated',

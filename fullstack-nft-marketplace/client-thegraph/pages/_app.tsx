@@ -1,4 +1,5 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { MoralisProvider } from 'react-moralis';
 import { NotificationProvider } from 'web3uikit';
@@ -10,7 +11,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>

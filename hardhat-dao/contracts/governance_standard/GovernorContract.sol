@@ -2,11 +2,11 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/governance/Governor.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
+import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
 
 contract GovernorContract is
     Governor,
@@ -19,22 +19,20 @@ contract GovernorContract is
     constructor(
         IVotes _token,
         TimelockController _timelock,
-        uint256 _votingDelay,
+        uint256 _quorumPercentage,
         uint256 _votingPeriod,
-        uint256 _quorumPercentage
+        uint256 _votingDelay
     )
         Governor("GovernorContract")
         GovernorSettings(
-            _votingDelay, /* 1 block */
-            _votingPeriod, /* 45818 blocks = ~1 week */
-            0
+            _votingDelay, /* 1 block */ // votind delay
+            _votingPeriod, // 45818, /* 1 week */ // voting period
+            0 // proposal threshold
         )
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(_quorumPercentage)
         GovernorTimelockControl(_timelock)
     {}
-
-    // The following functions are overrides required by Solidity.
 
     function votingDelay()
         public
@@ -54,6 +52,8 @@ contract GovernorContract is
         return super.votingPeriod();
     }
 
+    // The following functions are overrides required by Solidity.
+
     function quorum(uint256 blockNumber)
         public
         view
@@ -61,6 +61,15 @@ contract GovernorContract is
         returns (uint256)
     {
         return super.quorum(blockNumber);
+    }
+
+    function getVotes(address account, uint256 blockNumber)
+        public
+        view
+        override(IGovernor, Governor)
+        returns (uint256)
+    {
+        return super.getVotes(account, blockNumber);
     }
 
     function state(uint256 proposalId)
